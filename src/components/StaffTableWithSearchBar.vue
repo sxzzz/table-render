@@ -8,7 +8,7 @@
             <input type="text" id="inputDept" class="form-control" v-model="keyword">
         </div>
         <div class="col-auto">
-            <button type="submit" class="btn btn-primary" @click="doSearch">Search</button>
+            <button type="submit" class="btn btn-primary" @click="doSearchByName">Search</button>
             <button class="btn btn-secondary ml-2" @click="doClear">Clear</button>
         </div>
     </div>
@@ -24,12 +24,14 @@
                 <th>Occupation</th>
                 <th>Username</th>
             </tr>
+            
         </thead>
         <tbody>
             <tr v-for="(item, index) in staffList" :key="item.id" :class="rowClassGenerator(index+1)">
                 <td>
                     {{ item.id }}
                 </td>
+
                 <td @click="doSearch2(item.department)">
                     {{ item.department }}
                 </td>
@@ -53,7 +55,7 @@ export default {
   name: 'StaffTable',
   props: {
     staff: {
-        type: Array
+        //type: Array
     }
   },
   data(){
@@ -77,6 +79,7 @@ export default {
           }
           return cls;
       },
+      //search by department
       doSearch: function(){
           const k = this.keyword.trim();
 
@@ -84,9 +87,9 @@ export default {
               // keywork can not be empty string 
               // Clear current staff list
               this.staffList = [];
-              // Check each row in staff, if match keywork, then appended into staff list
+              // Check each row in department, if match keyword, then appended into department list
               this.staff.forEach(element => {
-                  if(element.department.toUpperCase().indexOf(k.toUpperCase()) > -1){
+                  if(element.department.toUpperCase().indexOf(k.toUpperCase())  > -1){
                       this.staffList.push(element)
                   }
               });
@@ -102,7 +105,27 @@ export default {
       doSearch2: function(txt){
           this.keyword = txt;
           this.doSearch();
-      }
+      },
+      //search by staff name
+      doSearchByName:function(){
+          const k = this.keyword.trim();
+
+          if(k.length > 0){
+              // keywork can not be empty string 
+              // Clear current staff list
+              this.staffList = [];
+              // Check each row in staff, if match keyword, then appended into staff list
+              this.staff.forEach(element => {
+                  // Check each row in name list, if match keyword, then appended into name list
+                  if(element.first_name.toUpperCase().indexOf(k.toUpperCase())> -1 || element.last_name.toUpperCase().indexOf(k.toUpperCase())> -1){
+                      this.staffList.push(element)
+                  }
+              });
+          }else{
+              // Show all staff
+              this.staffList = this.staff;
+          } 
+      },
   }
 }
 </script>
